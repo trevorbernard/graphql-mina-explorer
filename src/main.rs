@@ -1,6 +1,8 @@
 use graphql_client::{reqwest::post_graphql_blocking as post_graphql, GraphQLQuery, Response};
 use reqwest::blocking::Client;
 
+type DateTime = String;
+
 #[derive(GraphQLQuery)]
 #[graphql(
     schema_path = "src/transaction_schema.graphql",

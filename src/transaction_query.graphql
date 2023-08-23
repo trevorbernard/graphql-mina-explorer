@@ -1,6 +1,6 @@
 query TransactionQuery(
-  $dateTime_gte: String,
-  $dateTime_lte: String,
+  $dateTime_gte: DateTime,
+  $dateTime_lte: DateTime,
   $memo1: String,
   $memo2: String,
   $memo3: String,
