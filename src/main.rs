@@ -1,5 +1,9 @@
+use std::collections::HashMap;
+
 use graphql_client::{reqwest::post_graphql_blocking as post_graphql, GraphQLQuery, Response};
 use reqwest::blocking::Client;
+
+use crate::transaction_query::TransactionQueryTransactions;
 
 type DateTime = String;
 
@@ -7,7 +11,7 @@ type DateTime = String;
 #[graphql(
     schema_path = "src/transaction_schema.graphql",
     query_path = "src/transaction_query.graphql",
-    response_derives = "Debug",
+    response_derives = "Debug"
 )]
 pub struct TransactionQuery;
 
@@ -21,8 +25,22 @@ fn main() {
         memo4: Some("E4YbUmaZZqAoUdTZYvZkSmLjHfccTMbb5RnTQHixwRWq2YqLdLZyE".to_string()),
     };
     let client = Client::new();
-    let response_body =
-    post_graphql::<TransactionQuery, _>(&client, "https://graphql.minaexplorer.com", variables).unwrap();
+    let response_body: Response<transaction_query::ResponseData> =
+        post_graphql::<TransactionQuery, _>(&client, "https://graphql.minaexplorer.com", variables)
+            .unwrap();
 
-    println!("{:?}", response_body);
+    let txns = response_body.data.unwrap().transactions;
+
+    let txns = txns
+        .into_iter()
+        .flatten()
+        .filter(|tx| tx.to.clone().unwrap() == tx.from.clone().unwrap())
+        .fold(HashMap::new(), |mut map, txn| {
+            // Dedup based on from public key keeping the most recent transaction
+            map.entry(txn.from.clone().unwrap()).or_insert(txn);
+            map
+        })
+        .into_values()
+        .collect::<Vec<TransactionQueryTransactions>>();
+    println!("{:?}", txns.len());
 }

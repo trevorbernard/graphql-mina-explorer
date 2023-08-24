@@ -20,6 +20,7 @@ query TransactionQuery(
     memo
     canonical
     from
+    to
     hash
     blockHeight
     dateTime
