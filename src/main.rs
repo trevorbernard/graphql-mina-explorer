@@ -1,3 +1,5 @@
+mod signed_command_memo;
+
 use std::collections::HashMap;
 
 use graphql_client::{reqwest::post_graphql_blocking as post_graphql, GraphQLQuery, Response};
