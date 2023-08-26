@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use graphql_client::{reqwest::post_graphql_blocking as post_graphql, GraphQLQuery, Response};
 use reqwest::blocking::Client;
 
+use time::{OffsetDateTime, UtcOffset};
+
 use crate::transaction_query::TransactionQueryTransactions;
 
 type DateTime = String;
@@ -43,4 +45,33 @@ fn main() {
         .into_values()
         .collect::<Vec<TransactionQueryTransactions>>();
     println!("{:?}", txns.len());
+
+    // testing some code for another repo
+    x(1231231231231, 4564564564564);
+
+    // testing some Rust concepts
+    let number_str = "123789";
+    let parsed_number: Result<i64, _> = number_str.parse::<i64>();
+
+    match parsed_number {
+        Ok(n) => println!("Parsed number: {:?}", n),
+        Err(_) => println!("Failed to parse number"),
+    }
+}
+
+fn x(
+    start_time_millis: i64,
+    end_time_millis: i64
+) {
+    let start_unix_timestamp = start_time_millis / 1000; // Convert milliseconds to seconds
+    let end_unix_timestamp = end_time_millis / 1000;     // Convert milliseconds to seconds
+
+    let start_datetime = OffsetDateTime::from_unix_timestamp(start_unix_timestamp);
+    let end_datetime = OffsetDateTime::from_unix_timestamp(end_unix_timestamp);
+
+    let start_utc_datetime = start_datetime.expect("not a time value").to_offset(UtcOffset::UTC);
+    let end_utc_datetime = end_datetime.expect("not a time value").to_offset(UtcOffset::UTC);
+
+    println!("start_datetime: {:?}", start_utc_datetime);
+    println!("end_datetime: {:?}", end_utc_datetime);
 }

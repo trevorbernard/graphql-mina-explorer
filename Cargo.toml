@@ -9,3 +9,4 @@ edition = "2021"
 graphql_client = { version = "0.13.0", features = ["reqwest-blocking"] }
 reqwest = { version = "^0.11.18", features = ["json", "blocking"] }
 serde = { version = "1.0.185" }
+time = "0.3.0"
